@@ -32,7 +32,7 @@ npm install react-native-pager-view
 ### 基础示例
 
 ```jsx
-import { CollapsibleTabView, TabFlatList } from 'react-native-collapsible-header-tab-view';
+import CollapsibleTabView , { TabFlatList } from 'react-native-collapsible-header-tab-view';
 
 export function App() {
   return (

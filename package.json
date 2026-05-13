@@ -1,6 +1,6 @@
 {
   "name": "react-native-collapsible-header-tab-view",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "不依赖 react-native-reanimated ，可吸顶的tab view",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,6 +17,13 @@
     "pager"
   ],
   "author": "",
+  "maintainers": [
+    {
+      "name": "MasterZuom",
+      "email": "19471180+MasterZuom@users.noreply.github.com",
+      "url": "https://github.com/MasterZuom"
+    }
+  ],
   "license": "MIT",
   "peerDependencies": {
     "react": "*",
