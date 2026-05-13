@@ -22,6 +22,7 @@ yarn add react-native-collapsible-header-tab-view
 
 ### 依赖
 
+本库依赖 react-native-pager-view, 确保您项目安装正确版本的pagerView
 ```bash
 npm install react-native-pager-view
 ```
@@ -40,13 +41,11 @@ export function App() {
       renderTabBar={(props) => <TabBarComponent {...props} />}
     >
       <TabFlatList
-        index={0}
         data={data1}
         renderItem={({ item }) => <ItemComponent item={item} />}
         keyExtractor={(item) => item.id}
       />
       <TabFlatList
-        index={1}
         data={data2}
         renderItem={({ item }) => <ItemComponent item={item} />}
         keyExtractor={(item) => item.id}
