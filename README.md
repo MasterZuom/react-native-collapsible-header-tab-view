@@ -2,7 +2,7 @@
 
 > 不依赖 react-native-reanimated，可吸顶的 tab view 组件
 
-[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zuom/react-native-collapsible-header-tab-view/blob/master/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/MasterZuom/react-native-collapsible-header-tab-view/blob/master/LICENSE)
 
 ## 特性
 
@@ -102,4 +102,4 @@ MIT
 
 ## 作者
 
-- GitHub: [@zuom](https://github.com/zuom)
+- GitHub: [@MasterZuom](https://github.com/MasterZuom)
