@@ -54,7 +54,7 @@ git push origin feature/your-feature-name
 
 ## 报告 Bug
 
-请通过 [GitHub Issues](https://github.com/zuom/react-native-collapsible-header-tab-view/issues) 报告 bug，包含：
+请通过 [GitHub Issues](https://github.com/MasterZuom/react-native-collapsible-header-tab-view/issues) 报告 bug，包含：
 
 - Bug 描述
 - 复现步骤
