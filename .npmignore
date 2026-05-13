@@ -1,0 +1,28 @@
+# Development
+node_modules/
+.vscode/
+.idea/
+.git/
+.github/
+.gitignore
+
+# Testing
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Build
+tsconfig.json
+jest.config.js
+.prettierrc
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,36 @@
+{
+  "name": "react-native-collapsible-header-tab-view",
+  "version": "1.0.0",
+  "description": "不依赖 react-native-reanimated ，可吸顶的tab view",
+  "main": "src/index.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zuom/react-native-collapsible-header-tab-view.git"
+  },
+  "keywords": [
+    "react-native",
+    "collapsible",
+    "tab-view",
+    "sticky",
+    "header",
+    "pager"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.65.0",
+    "react-native-pager-view": "^6.0.0",
+    "ahooks": "^3.0.0"
+  },
+  "devDependencies": {
+    "react": "^18.0.0",
+    "react-native": "^0.71.0",
+    "react-native-pager-view": "^6.2.0",
+    "ahooks": "^3.7.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "src"
+  ]
+}
