@@ -23,7 +23,7 @@ yarn add react-native-collapsible-header-tab-view
 ### 依赖
 
 ```bash
-npm install react-native-pager-view ahooks
+npm install react-native-pager-view
 ```
 
 ## 使用
