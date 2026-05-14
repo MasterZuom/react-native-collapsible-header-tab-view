@@ -145,20 +145,17 @@ const CollapsibleTabView = forwardRef<
       : 0;
 
     // header浮层 垂直偏移动画值，驱动 header + tabBar 整体上移实现折叠效果。
-    const headerTranslateY = useMemo(
-      () =>
-        collapseRange > 0
-          ? scrollY.interpolate({
-              inputRange: [0, collapseRange],
-              outputRange: [0, -collapseRange],
-              extrapolate: "clamp",
-            })
-          : new Animated.Value(0),
-      [scrollY, collapseRange],
-    );
+    const headerTranslateY = scrollY.interpolate({
+      inputRange: [0, Math.max(collapseRange, 1)],
+      outputRange: [0, -collapseRange],
+      extrapolate: "clamp",
+    });
 
     const registerRef = useCallback(
-      (index: number, ref: FlatList<any> | SectionList<any> | ScrollView | null) => {
+      (
+        index: number,
+        ref: FlatList<any> | SectionList<any> | ScrollView | null,
+      ) => {
         if (ref) {
           tabRefs.current.set(index, ref);
         } else {
