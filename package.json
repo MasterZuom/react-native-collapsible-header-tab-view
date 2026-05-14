@@ -1,6 +1,6 @@
 {
   "name": "react-native-collapsible-header-tab-view",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "不依赖 react-native-reanimated ，可吸顶的tab view",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

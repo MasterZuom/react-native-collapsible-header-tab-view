@@ -9,7 +9,6 @@ import React, {
 import {
   Animated,
   FlatList,
-  InteractionManager,
   LayoutChangeEvent,
   ScrollView,
   StyleSheet,
@@ -115,7 +114,7 @@ const CollapsibleTabView = forwardRef<
           return { headerHeight: h, tabBarHeight: t, ready: true };
         });
       }
-    }, []);
+    }, [adjustY]);
 
     const handleHeaderLayout = useCallback(
       (e: LayoutChangeEvent) => {
@@ -177,6 +176,7 @@ const CollapsibleTabView = forwardRef<
     );
 
     // 切换 tab 时，把新 tab 的 FlatList/ScrollView 滚动到计算好的 targetY，确保 header 吸顶状态和列表位置一致。
+    // 调用原生组件的 scrollToOffset/scrollTo 直接走 Native 侧，不经过 JS 动画帧调度
     const scrollTabTo = useCallback((index: number, offset: number) => {
       const ref: any = tabRefs.current.get(index);
       if (!ref) return;
@@ -194,35 +194,49 @@ const CollapsibleTabView = forwardRef<
       }
     }, []);
 
-    //核心代码: 切换Tab时 计算页面滚动的位置
-    const syncTabOnSwitch = useCallback(
-      (newIndex: number) => {
-        // 读取当前 Tab 和目标 Tab 的滚动位置
-        const currentY = tabScrollYMap.current.get(activeIndex) ?? 0;
-        const newTabSavedY = tabScrollYMap.current.get(newIndex) ?? 0;
+    // (点击切换) 在 Tab 切换完成时同步目标页面的滚动位置
+    const syncTabOnSwitch = useCallback((newIndex: number) => {
+      // 读取当前 Tab 和目标 Tab 的滚动位置
+      const currentY = tabScrollYMap.current.get(activeIndex) ?? 0;
+      const newTabSavedY = tabScrollYMap.current.get(newIndex) ?? 0;
 
-        // 判断当前 Tab 的头部是否已折叠
-        const isCollapsed = currentY >= collapseRange - 1;
+      // 判断当前 Tab 的头部是否已折叠
+      const isCollapsed = currentY >= collapseRange - 1;
 
-        // 计算目标 Tab 应该滚动到的位置
-        let targetY: number;
-        if (isCollapsed) {
-          targetY = Math.max(newTabSavedY, collapseRange);
-        } else {
-          targetY = Math.min(currentY, collapseRange);
+      // 计算目标 Tab 应该滚动到的位置
+      const targetY = isCollapsed
+        ? Math.max(newTabSavedY, collapseRange)
+        : Math.min(currentY, collapseRange);
+
+      // 执行滚动并更新状态
+      scrollTabTo(newIndex, targetY);
+      tabScrollYMap.current.set(newIndex, targetY);
+      scrollY.setValue(Math.min(targetY, collapseRange));
+    }, []);
+
+    // （拖拽切换）在用户开始拖拽时，立即将相邻 Tab（±1）的滚动位置同步到正确值
+    const preSyncAdjacentTabs = useCallback(() => {
+      const currentY = tabScrollYMap.current.get(activeIndex) ?? 0;
+      const isCollapsed = currentY >= collapseRange - 1;
+
+      for (const i of [activeIndex - 1, activeIndex + 1]) {
+        if (i < 0 || i >= pages.length) continue;
+        const savedY = tabScrollYMap.current.get(i) ?? 0;
+        const targetY = isCollapsed
+          ? Math.max(savedY, collapseRange)
+          : Math.min(currentY, collapseRange);
+        scrollTabTo(i, targetY);
+        tabScrollYMap.current.set(i, targetY);
+      }
+    }, [activeIndex, collapseRange, pages.length, scrollTabTo]);
+
+    const handlePageScrollStateChanged = useCallback(
+      (e: { nativeEvent: { pageScrollState: string } }) => {
+        if (e.nativeEvent.pageScrollState === "dragging") {
+          preSyncAdjacentTabs();
         }
-
-        // 在交互完成后执行滚动并更新状态
-        // runAfterInteractions 会等待所有正在进行的动画和触摸交互完成后再执行回调，确保：
-        // 1. 新 Tab 页已经渲染就绪，scrollTo 能生效
-        // 2. 不与切换动画争抢帧，体验更流畅
-        InteractionManager.runAfterInteractions(() => {
-          scrollTabTo(newIndex, targetY);
-          tabScrollYMap.current.set(newIndex, targetY);
-          scrollY.setValue(Math.min(targetY, collapseRange));
-        });
       },
-      [activeIndex, collapseRange, scrollTabTo, scrollY],
+      [preSyncAdjacentTabs],
     );
 
     const handleTabPress = useCallback(
@@ -233,18 +247,19 @@ const CollapsibleTabView = forwardRef<
         pagerRef.current?.setPageWithoutAnimation(index);
         onTabChange?.(index);
       },
-      [activeIndex, onTabChange, syncTabOnSwitch],
+      [activeIndex, syncTabOnSwitch, onTabChange],
     );
 
     const handlePageSelected = useCallback(
       (e: { nativeEvent: { position: number } }) => {
         const newIndex = e.nativeEvent.position;
         if (newIndex === activeIndex) return;
-        syncTabOnSwitch(newIndex);
+        const savedY = tabScrollYMap.current.get(newIndex) ?? 0;
+        scrollY.setValue(Math.min(savedY, collapseRange));
         setActiveIndex(newIndex);
         onTabChange?.(newIndex);
       },
-      [activeIndex, onTabChange, syncTabOnSwitch],
+      [activeIndex, collapseRange, scrollY, onTabChange],
     );
 
     const tabBarProps: TabBarProps = useMemo(
@@ -300,6 +315,7 @@ const CollapsibleTabView = forwardRef<
               style={styles.pager}
               initialPage={initialTabIndex}
               onPageSelected={handlePageSelected}
+              onPageScrollStateChanged={handlePageScrollStateChanged}
               scrollEnabled={swipeEnabled}
             >
               {pages.map((page: React.ReactElement, i) => (
