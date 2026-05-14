@@ -11,6 +11,7 @@ import {
   FlatList,
   LayoutChangeEvent,
   ScrollView,
+  SectionList,
   StyleSheet,
   View,
 } from "react-native";
@@ -26,6 +27,7 @@ import {
 
 export { TabFlatList } from "./TabFlatList";
 export { TabScrollView } from "./TabScrollView";
+export { TabSectionList } from "./TabSectionList";
 export type {
   CollapsibleTabViewProps,
   CollapsibleTabViewRef,
@@ -135,7 +137,7 @@ const CollapsibleTabView = forwardRef<
     const scrollY = useRef(new Animated.Value(0)).current;
     const tabScrollYMap = useRef(new Map<number, number>());
     const tabRefs = useRef(
-      new Map<number, FlatList<any> | ScrollView | null>(),
+      new Map<number, FlatList<any> | SectionList<any> | ScrollView | null>(),
     );
     // header浮层 在Y轴 偏移的最大距离
     const collapseRange = stickyEnabled
@@ -156,7 +158,7 @@ const CollapsibleTabView = forwardRef<
     );
 
     const registerRef = useCallback(
-      (index: number, ref: FlatList<any> | ScrollView | null) => {
+      (index: number, ref: FlatList<any> | SectionList<any> | ScrollView | null) => {
         if (ref) {
           tabRefs.current.set(index, ref);
         } else {

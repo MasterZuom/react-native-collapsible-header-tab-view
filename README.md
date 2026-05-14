@@ -9,7 +9,7 @@
 ✨ **轻量级** - 不依赖 react-native-reanimated  
 🎯 **高性能** - 优化的滚动性能  
 📱 **吸顶效果** - 完整的粘性头部和标签栏支持  
-🔄 **灵活** - 支持 FlatList 和 ScrollView  
+🔄 **灵活** - 支持 FlatList、SectionList 和 ScrollView  
 ⚡ **TypeScript** - 完整的类型支持  
 
 ## 安装
@@ -31,8 +31,18 @@ npm install react-native-pager-view
 
 ### 基础示例
 
+`TabFlatList`、`TabSectionList`、`TabScrollView` 可以在同一个 `CollapsibleTabView` 中混合使用，每个子组件对应一个 Tab 页。
+
 ```jsx
-import CollapsibleTabView , { TabFlatList } from 'react-native-collapsible-header-tab-view';
+import CollapsibleTabView, {
+  TabFlatList,
+  TabSectionList,
+} from 'react-native-collapsible-header-tab-view';
+
+const sections = [
+  { title: 'A', data: ['Alice', 'Amy'] },
+  { title: 'B', data: ['Bob', 'Ben'] },
+];
 
 export function App() {
   return (
@@ -40,15 +50,18 @@ export function App() {
       renderHeader={() => <HeaderComponent />}
       renderTabBar={(props) => <TabBarComponent {...props} />}
     >
+      {/* Tab 1: FlatList */}
       <TabFlatList
-        data={data1}
+        data={data}
         renderItem={({ item }) => <ItemComponent item={item} />}
         keyExtractor={(item) => item.id}
       />
-      <TabFlatList
-        data={data2}
-        renderItem={({ item }) => <ItemComponent item={item} />}
-        keyExtractor={(item) => item.id}
+      {/* Tab 2: SectionList */}
+      <TabSectionList
+        sections={sections}
+        renderItem={({ item }) => <Text>{item}</Text>}
+        renderSectionHeader={({ section }) => <Text>{section.title}</Text>}
+        keyExtractor={(item, index) => item + index}
       />
     </CollapsibleTabView>
   );
@@ -75,11 +88,23 @@ export function App() {
 
 ### TabFlatList
 
+继承所有 `FlatList` 的 Props。
+
 | 属性 | 类型 | 说明 |
 |------|------|------|
-| index | `number` | 必需，标签页索引 |
 | data | `T[]` | 列表数据 |
 | renderItem | `(info: { item: T, index: number }) => ReactNode` | 列表项渲染函数 |
+| keyExtractor | `(item: T, index: number) => string` | 列表项 key |
+
+### TabSectionList
+
+继承所有 `SectionList` 的 Props。
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| sections | `SectionListData[]` | 分组数据 |
+| renderItem | `(info: { item: T, index: number, section: S }) => ReactNode` | 列表项渲染函数 |
+| renderSectionHeader | `(info: { section: S }) => ReactNode` | 分组头部渲染函数 |
 | keyExtractor | `(item: T, index: number) => string` | 列表项 key |
 
 ## Ref Methods

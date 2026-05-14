@@ -1,5 +1,5 @@
 import React from "react"
-import { Animated, FlatList, ScrollView, StyleProp, ViewStyle } from "react-native"
+import { Animated, FlatList, ScrollView, SectionList, StyleProp, ViewStyle } from "react-native"
 
 export interface TabBarProps {
   activeIndex: number
@@ -34,6 +34,6 @@ export interface CollapsibleContextValue {
   tabBarHeight: number
   renderHeader?: () => React.ReactNode
   renderTabBar?: () => React.ReactNode
-  registerRef: (index: number, ref: FlatList<any> | ScrollView | null) => void
+  registerRef: (index: number, ref: FlatList<any> | SectionList<any> | ScrollView | null) => void
   syncScrollY: (index: number, y: number) => void
 }
